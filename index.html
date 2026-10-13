@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Hashmark — File &amp; text hash tool</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3m13 5h3a2 2 0 0 0 2-2v-3M8 8h8v8H8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 12h.01M14 12h.01M10 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        Hashmark
+      </div>
+      <button class="icon-button" id="themeToggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <section class="intro" aria-labelledby="pageTitle">
+      <p class="eyebrow">Simple. Private. Instant.</p>
+      <h1 id="pageTitle">Hash files &amp; text<br>in your browser.</h1>
+      <p class="subtitle">Generate checksums or verify a hash you already have. Your data stays on your device and is never uploaded.</p>
+    </section>
+
+    <section class="workspace" aria-label="Hash tool">
+      <div class="tabs" role="tablist" aria-label="Hash tool mode">
+        <button class="tab" id="generateTab" type="button" role="tab" aria-selected="true" aria-controls="generatePanel">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5h14v14H5zM8 9h8M8 12h5M8 15h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Generate
+        </button>
+        <button class="tab" id="matchTab" type="button" role="tab" aria-selected="false" aria-controls="matchPanel" tabindex="-1">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.5 4.5m-12-9 1.6 1.6 3.1-3.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Match
+        </button>
+      </div>
+
+      <section class="panel" id="generatePanel" role="tabpanel" aria-labelledby="generateTab">
+        <div class="section-heading">
+          <div>
+            <h2>Choose what to hash</h2>
+            <p class="section-help">Choose one algorithm for a quicker result or calculate them all.</p>
+          </div>
+          <div class="control-group">
+            <div class="source-switch" aria-label="Input type">
+              <button class="source-option" type="button" data-mode="file" aria-pressed="true">File</button>
+              <button class="source-option" type="button" data-mode="text" aria-pressed="false">Text</button>
+            </div>
+            <label class="algorithm-picker">
+              <span>Hash</span>
+              <select id="algorithmSelect" aria-label="Hash algorithm">
+                <option value="all">All algorithms</option>
+                <option value="MD5">MD5</option>
+                <option value="SHA-1">SHA-1</option>
+                <option value="SHA-224">SHA-224</option>
+                <option value="SHA-256">SHA-256</option>
+                <option value="SHA-384">SHA-384</option>
+                <option value="SHA-512">SHA-512</option>
+                <option value="SHA3-256">SHA3-256</option>
+                <option value="SHA3-512">SHA3-512</option>
+                <option value="CRC32">CRC32</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="input-card">
+          <label class="dropzone" id="generateDropzone" for="generateFile">
+            <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="drop-title">Drop a file here or <span style="color:var(--accent)">browse</span></span>
+            <span class="drop-hint">Any file type · processed locally</span>
+            <input id="generateFile" type="file" aria-label="Choose file to hash">
+          </label>
+          <div class="text-input" hidden>
+            <textarea id="generateText" placeholder="Type or paste your text here…" aria-label="Text to hash"></textarea>
+          </div>
+          <p class="file-meta" id="generateMeta" aria-live="polite"></p>
+          <div class="progress-area" id="generateProgress" hidden>
+            <div class="progress-label"><span id="generateProgressLabel">Preparing file…</span><span id="generateProgressValue">0%</span></div>
+            <progress id="generateProgressBar" max="100" value="0" aria-label="Hashing progress"></progress>
+          </div>
+          <p class="error-message" id="generateError" role="alert"></p>
+        </div>
+        <div class="action-row">
+          <span class="privacy-note"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 2.9 8.3 7 10 4.1-1.7 7-5.5 7-10V6l-7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Files never leave your device</span>
+          <button class="primary-button" id="generateButton" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18m-9-9h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span id="generateButtonLabel">Generate all hashes</span>
+          </button>
+        </div>
+        <div class="results" id="generateResults" hidden>
+          <div class="results-title"><h2>Checksums</h2><span class="result-count" id="resultCount"></span></div>
+          <div class="hash-list" id="hashList" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="matchPanel" role="tabpanel" aria-labelledby="matchTab" hidden>
+        <div class="section-heading">
+          <div>
+            <h2>Verify a known hash</h2>
+            <p class="section-help">Provide the original data and a checksum to check whether they match.</p>
+          </div>
+          <div class="source-switch" aria-label="Input type">
+            <button class="source-option" type="button" data-mode="file" aria-pressed="true">File</button>
+            <button class="source-option" type="button" data-mode="text" aria-pressed="false">Text</button>
+          </div>
+        </div>
+        <div class="input-card">
+          <label class="dropzone" id="matchDropzone" for="matchFile">
+            <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="drop-title">Drop a file here or <span style="color:var(--accent)">browse</span></span>
+            <span class="drop-hint">Any file type · processed locally</span>
+            <input id="matchFile" type="file" aria-label="Choose file to verify">
+          </label>
+          <div class="text-input" hidden>
+            <textarea id="matchText" placeholder="Type or paste the original text here…" aria-label="Text to verify"></textarea>
+          </div>
+          <p class="file-meta" id="matchMeta" aria-live="polite"></p>
+          <div class="known-hash">
+            <label for="knownHash">Known hash</label>
+            <input class="hash-input" id="knownHash" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="Paste the hash to verify">
+            <p class="known-help">Hash type is detected by its length. For ambiguous lengths, all matching algorithms are checked.</p>
+          </div>
+          <div class="progress-area" id="matchProgress" hidden>
+            <div class="progress-label"><span id="matchProgressLabel">Preparing file…</span><span id="matchProgressValue">0%</span></div>
+            <progress id="matchProgressBar" max="100" value="0" aria-label="Verification progress"></progress>
+          </div>
+          <p class="error-message" id="matchError" role="alert"></p>
+        </div>
+        <div class="action-row">
+          <span class="privacy-note"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 2.9 8.3 7 10 4.1-1.7 7-5.5 7-10V6l-7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Files never leave your device</span>
+          <button class="primary-button" id="matchButton" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.5 4.5m-12-9 1.6 1.6 3.1-3.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Check hash
+          </button>
+        </div>
+        <div class="match-result" id="matchResult" role="status" aria-live="polite" hidden>
+          <span class="match-icon" id="matchIcon" aria-hidden="true"></span>
+          <div class="match-copy"><strong id="matchTitle"></strong><p id="matchDetail"></p></div>
+        </div>
+      </section>
+    </section>
+    <footer class="footer">MD5 and SHA-1 are weak for security and should not be used for new security-sensitive applications.</footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-md5@0.8.3/build/md5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.11.0/build/sha256.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-sha3@0.9.3/src/sha3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/crc-32@1.2.2/crc32.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
